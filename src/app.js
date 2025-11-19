@@ -6,6 +6,9 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+const taskRoutes = require('./routes/tasks.routes.js');
+app.use('/tasks', taskRoutes);
+
 app.get('/', (req, res) => {
   res.json({ message: 'API running' });
 });
