@@ -1,46 +1,30 @@
-// const express = require('express');
-// require('dotenv').config();
-
-// const app = express();
-// const PORT = process.env.PORT || 3000;
-
-// app.use(express.json());
-
-// const taskRoutes = require('./routes/tasks.routes.js');
-// app.use('/tasks', taskRoutes);
-
-// app.get('/', (req, res) => {
-//   res.json({ message: 'API running' });
-// });
-
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
-// src/app.js
 import authRoutes from "./routes/auth.routes.js";
 import tasksRoutes from './routes/tasks.routes.js';
 import express from "express";
 import dotenv from 'dotenv'
+
+// Cargar variables de entorno desde el archivo .env
 dotenv.config();
 
-
 const app = express();
+
+// Puerto donde va a correr el servidor
 const PORT = process.env.PORT || 3000;
 
-// Middlewares
+// Middleware para que Express pueda leer JSON en el cuerpo de las peticiones
 app.use(express.json());
 
-// Rutas
-app.use('/auth', authRoutes);
-app.use('/tasks', tasksRoutes);
+// Rutas públicas y privadas
+// Aquí solo se registran las rutas. La protección con JWT se hace dentro de cada router.
+app.use('/auth', authRoutes);   // aquí entran login, register, refresh (todas públicas)
+app.use('/tasks', tasksRoutes); // estas deberían requerir JWT (luego agregamos el middleware)
 
-// Ruta raíz
+// Ruta básica para verificar que el servidor funciona
 app.get('/', (req, res) => {
   res.json({ message: 'API running' });
 });
 
-// Iniciar servidor
+// Iniciar el servidor
 app.listen(PORT, () => {
   console.log(`Server running on port: http://localhost:${PORT}`);
 });
-
