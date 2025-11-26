@@ -16,25 +16,31 @@
 // app.listen(PORT, () => {
 //   console.log(`Server running on port ${PORT}`);
 // });
-const express = require('express');
-require('dotenv').config();
-const tasksRoutes = require('./routes/tasks.routes');
-const authRoutes = require('./routes/auth.routes');  
+// src/app.js
+import authRoutes from "./routes/auth.routes.js";
+import tasksRoutes from './routes/tasks.routes.js';
+import express from "express";
+import dotenv from 'dotenv'
+dotenv.config();
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middlewares
 app.use(express.json());
+
+// Rutas
 app.use('/auth', authRoutes);
+app.use('/tasks', tasksRoutes);
 
-
+// Ruta raíz
 app.get('/', (req, res) => {
   res.json({ message: 'API running' });
 });
 
-app.use('/auth', authRoutes);  // 
-app.use('/tasks', tasksRoutes);
-
+// Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port: http://localhost:${PORT}`);
 });
+

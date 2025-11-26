@@ -1,5 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+// src/controllers/tasks.controller.js
+import prisma from '../prismaClient.js';
 
 // GET /tasks
 const getTasks = async (req, res) => {
@@ -36,18 +36,23 @@ const createTask = async (req, res) => {
   }
 };
 
-// PUT /tasks/:id
+// PUT /tasks/:id — actualiza título, descripción y estado
 const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, completed } = req.body;
+    const { title, description, status } = req.body;
+
+    // Validamos que el estado venga como "pending" o "done"
+    if (status && !['pending', 'done'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status value' });
+    }
 
     const task = await prisma.task.update({
       where: { id: parseInt(id) },
       data: {
         title,
         description,
-        completed: completed === undefined ? undefined : Boolean(completed)
+        status
       }
     });
 
@@ -74,4 +79,4 @@ const deleteTask = async (req, res) => {
   }
 };
 
-module.exports = { getTasks, createTask, updateTask, deleteTask };
+export { getTasks, createTask, updateTask, deleteTask };
