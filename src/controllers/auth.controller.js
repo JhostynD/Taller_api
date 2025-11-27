@@ -1,7 +1,7 @@
 // src/controllers/auth.controller.js
-import prisma from '../prismaClient.js';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import prisma from "../prismaClient.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 // REGISTER (Responsable: Integrante A)
 const register = async (req, res) => {
@@ -10,17 +10,17 @@ const register = async (req, res) => {
 
     if (!email || !password) {
       return res.status(400).json({
-        error: 'Email and password are required'
+        error: "Email and password are required",
       });
     }
 
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (existingUser) {
       return res.status(400).json({
-        error: 'Email already in use'
+        error: "Email already in use",
       });
     }
 
@@ -29,21 +29,20 @@ const register = async (req, res) => {
     const user = await prisma.user.create({
       data: {
         email,
-        password: hashedPassword
-      }
+        password: hashedPassword,
+      },
     });
 
     res.status(201).json({
-      message: 'User registered successfully',
+      message: "User registered successfully",
       user: {
         id: user.id,
-        email: user.email
-      }
+        email: user.email,
+      },
     });
-
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Error registering user' });
+    res.status(500).json({ error: "Error registering user" });
   }
 };
 
@@ -54,17 +53,17 @@ const login = async (req, res) => {
 
     if (!email || !password) {
       return res.status(400).json({
-        error: 'Email and password are required'
+        error: "Email and password are required",
       });
     }
 
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (!user) {
       return res.status(401).json({
-        error: 'Invalid credentials'
+        error: "Invalid credentials",
       });
     }
 
@@ -72,22 +71,19 @@ const login = async (req, res) => {
 
     if (!validPassword) {
       return res.status(401).json({
-        error: 'Invalid credentials'
+        error: "Invalid credentials",
       });
     }
 
     // Crear JWT
-    const token = jwt.sign(
-      { sub: user.id },            // payload
-      process.env.JWT_SECRET,      // secret
-      { expiresIn: '1h' }          // expires
-    );
+    const token = jwt.sign({ sub: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     return res.json({ token });
-
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Error logging in user' });
+    res.status(500).json({ error: "Error logging in user" });
   }
 };
 

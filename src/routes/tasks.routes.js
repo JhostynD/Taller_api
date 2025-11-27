@@ -1,21 +1,20 @@
-// src/routes/tasks.routes.js
-import express from 'express';
-import passport from '../config/passport.js';
-import {
-  getTasks,
-  createTask,
-  updateTask,
-  deleteTask,
+import { Router } from 'express';
+import passport from 'passport';   // 👈 PASSPORT ORIGINAL
+import { 
+  getTasks, 
+  createTask, 
+  updateTask, 
+  deleteTask 
 } from '../controllers/tasks.controller.js';
 
-const router = express.Router();
+const router = Router();
 
-// Todas las rutas de /tasks requieren JWT con Passport
+// 🔐 Proteger TODAS las rutas de este archivo
 router.use(passport.authenticate('jwt', { session: false }));
 
-router.get('/', getTasks);        // GET /tasks
-router.post('/', createTask);     // POST /tasks
-router.put('/:id', updateTask);   // PUT /tasks/:id
-router.delete('/:id', deleteTask);// DELETE /tasks/:id
+router.get('/', getTasks);
+router.post('/', createTask);
+router.put('/:id', updateTask);
+router.delete('/:id', deleteTask);
 
 export default router;
