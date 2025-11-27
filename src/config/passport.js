@@ -1,24 +1,29 @@
 // src/config/passport.js
-import passport from 'passport';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
-import { prisma } from '../prismaClient.js'; // ajusta si el nombre es diferente
+import prisma from '../prismaClient.js';
 
 const opts = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // lee Authorization: Bearer xxx
-  secretOrKey: process.env.JWT_SECRET,                      // misma clave que usas al firmar
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // Lee el token del header
+  secretOrKey: process.env.JWT_SECRET,                      // Clave usada para firmar el JWT
 };
 
-passport.use(
-  new JwtStrategy(opts, async (payload, done) => {
-    try {
-      // aquí asumo que en el token guardas el id del usuario como payload.id
-      const user = await prisma.user.findUnique({ where: { id: payload.id } });
-      if (!user) return done(null, false); // no encontrado → 401
-      return done(null, user);             // se adjunta en req.user
-    } catch (err) {
-      return done(err, false);
-    }
-  })
-);
+export default function initializePassport(passport) {
+  passport.use(
+    new JwtStrategy(opts, async (payload, done) => {
+      try {
+        // 👇 Aquí está el cambio IMPORTANTE
+        // Login genera token así: { sub: user.id }
+        // entonces aquí también se usa payload.sub
+        const user = await prisma.user.findUnique({
+          where: { id: payload.sub }
+        });
 
-export default passport;
+        if (!user) return done(null, false);
+
+        return done(null, user);   // El usuario queda en req.user
+      } catch (err) {
+        return done(err, false);
+      }
+    })
+  );
+}

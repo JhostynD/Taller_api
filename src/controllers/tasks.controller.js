@@ -29,7 +29,7 @@ const createTask = async (req, res) => {
       data: {
         title,
         description,
-        userId
+        userId: userId,
       }
     });
 
