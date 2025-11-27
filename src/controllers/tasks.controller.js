@@ -4,12 +4,10 @@ import prisma from '../prismaClient.js';
 // GET /tasks - Obtiene SOLO las tareas del usuario autenticado
 const getTasks = async (req, res) => {
   try {
-    const userId = req.user.id; // ID obtenido del token
-
-    const tasks = await prisma.task.findMany({
-      where: { userId }
-    });
-
+     // ID obtenido del token
+    console.log("---------");
+    
+    const tasks = await prisma.task.findMany()
     res.json(tasks);
   } catch (error) {
     console.error('GET /tasks error:', error);

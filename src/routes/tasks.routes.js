@@ -1,11 +1,11 @@
 // src/routes/tasks.routes.js
 import express from 'express';
-import authMiddleware from '../middlewares/jwt.middleware.js';
+import {verifyToken} from '../middlewares/jwt.middleware.js';
 
 const router = express.Router();
 
 // Aplica el middleware a todas las rutas de este router
-router.use(authMiddleware);
+// router.use(verifyToken);
 
 import { 
   getTasks, 
@@ -14,7 +14,7 @@ import {
   deleteTask 
 } from '../controllers/tasks.controller.js';
 
-router.use(authMiddleware);
+router.use(verifyToken);
 
 
 router.get('/', getTasks);
