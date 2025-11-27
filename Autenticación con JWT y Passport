@@ -1,2 +1,3 @@
-En este proyecto las rutas protegidas (por ejemplo /tasks) usan Passport con la estrategia passport-jwt para validar tokens JWT enviados en el header Authorization: Bearer <token>.​
-Se decidió usar Passport en lugar de depender solo del middleware personalizado porque centraliza la lógica de autenticación en una estrategia reutilizable, permite proteger rutas con una sola línea (passport.authenticate('jwt', { session: false })) y deja la API lista para agregar otras formas de autenticación (como Google o GitHub) sin duplicar código.
+Al inicio del proyecto se usó un middleware propio en src/middlewares/jwt.middleware.js que revisaba el token enviado en el encabezado Authorization y decidía si dejaba pasar o no a la ruta según fuera válido.
+Para la versión final se incorporó Passport y se configuró en src/config/passport.js con la estrategia JWT, para manejar de forma más ordenada y estándar la validación del token. 
+Las rutas protegidas, como las de src/routes/tasks.routes.js, ahora usan Passport para controlar el acceso y asegurar que solo entren usuarios autenticados
